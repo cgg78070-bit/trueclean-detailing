@@ -1,0 +1,433 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #050505;
+  color: white;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+}
+
+.page {
+  min-height: 100vh;
+  background: #050505;
+}
+
+.hero {
+  padding: 28px 7%;
+  background:
+    radial-gradient(circle at top right, rgba(0, 204, 255, 0.18), transparent 35%),
+    linear-gradient(135deg, #050505, #111);
+  border-bottom: 1px solid rgba(0, 204, 255, 0.25);
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 70px;
+}
+
+.brand {
+  font-size: 24px;
+  font-weight: 800;
+  color: #00cfff;
+  letter-spacing: 2px;
+}
+
+.nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  color: #ddd;
+}
+
+.nav-links a:hover {
+  color: #00cfff;
+}
+
+.hero-content {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 50px;
+  align-items: center;
+  padding-bottom: 70px;
+}
+
+.tagline {
+  display: inline-block;
+  padding: 10px 18px;
+  border: 1px solid rgba(0, 204, 255, 0.4);
+  border-radius: 999px;
+  color: #90ecff;
+  background: rgba(0, 204, 255, 0.08);
+}
+
+h1 {
+  font-size: clamp(44px, 7vw, 86px);
+  line-height: 1;
+  margin: 20px 0;
+}
+
+h1 span {
+  color: #00cfff;
+}
+
+.description {
+  max-width: 650px;
+  font-size: 20px;
+  line-height: 1.6;
+  color: #cfcfcf;
+}
+
+.hero-buttons,
+.footer-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.primary-btn,
+.secondary-btn,
+.footer-buttons a {
+  display: inline-block;
+  padding: 15px 22px;
+  border-radius: 14px;
+  font-weight: 800;
+}
+
+.primary-btn {
+  background: #00cfff;
+  color: #000;
+}
+
+.primary-btn:hover {
+  background: #78eaff;
+}
+
+.secondary-btn,
+.footer-buttons a {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.secondary-btn:hover,
+.footer-buttons a:hover {
+  border-color: #00cfff;
+  color: #00cfff;
+}
+
+.logo-card {
+  background: #000;
+  border: 1px solid rgba(0, 204, 255, 0.25);
+  border-radius: 28px;
+  padding: 28px;
+  text-align: center;
+  box-shadow: 0 20px 80px rgba(0, 204, 255, 0.12);
+}
+
+.main-logo {
+  width: 100%;
+  max-width: 520px;
+  display: block;
+  margin: 0 auto 20px;
+  border-radius: 18px;
+}
+
+.logo-card h3 {
+  font-size: 32px;
+  letter-spacing: 7px;
+  color: #00cfff;
+  margin: 16px 0 0;
+}
+
+.promo-banner {
+  margin: 45px 7% 0;
+  padding: 28px;
+  text-align: center;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 204, 255, 0.14),
+    rgba(255, 255, 255, 0.04)
+  );
+  border: 1px solid rgba(0, 204, 255, 0.35);
+  border-radius: 28px;
+}
+
+.promo-banner h2 {
+  color: #00cfff;
+  font-size: 34px;
+  margin: 0 0 8px;
+}
+
+.promo-banner p {
+  font-size: 22px;
+  margin: 0;
+  color: #eee;
+}
+
+.pricing-section {
+  padding: 70px 7%;
+}
+
+.pricing-section > h2,
+.footer h2,
+.booking-section h2 {
+  text-align: center;
+  font-size: 44px;
+  margin-bottom: 10px;
+}
+
+.section-subtitle {
+  text-align: center;
+  color: #aaa;
+  margin-bottom: 45px;
+}
+
+.pricing-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 35px;
+  align-items: start;
+}
+
+.step-title {
+  margin: 30px 0 16px;
+  font-size: 24px;
+}
+
+.package-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.package-card,
+.addon-card {
+  background: #101010;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 22px;
+  padding: 22px;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.package-card:hover,
+.addon-card:hover {
+  border-color: rgba(0, 204, 255, 0.65);
+  transform: translateY(-2px);
+}
+
+.package-card.selected,
+.addon-card.selected {
+  border-color: #00cfff;
+  background: rgba(0, 204, 255, 0.1);
+}
+
+.package-card h4 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.price {
+  font-size: 38px;
+  color: #00cfff;
+  font-weight: 900;
+  margin: 14px 0;
+}
+
+.package-description {
+  color: #aaa;
+  line-height: 1.5;
+  margin-bottom: 15px;
+}
+
+.package-card ul {
+  padding-left: 18px;
+  color: #ccc;
+  line-height: 1.7;
+}
+
+.addon-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.addon-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+}
+
+.addon-type {
+  color: #00cfff;
+  margin: 0 0 6px;
+  font-size: 14px;
+}
+
+.addon-card h4 {
+  margin: 0;
+}
+
+.addon-description {
+  color: #aaa;
+  margin: 8px 0 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.addon-price {
+  font-size: 22px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.estimate-box {
+  position: sticky;
+  top: 20px;
+  background: #101010;
+  border: 1px solid rgba(0, 204, 255, 0.35);
+  border-radius: 28px;
+  padding: 28px;
+  box-shadow: 0 20px 80px rgba(0, 204, 255, 0.08);
+}
+
+.estimate-box h3 {
+  font-size: 28px;
+  margin-top: 0;
+}
+
+.estimate-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.empty {
+  color: #777;
+}
+
+.total-row {
+  margin-top: 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+}
+
+.total-row strong {
+  font-size: 52px;
+  color: #00cfff;
+}
+
+.note {
+  color: #888;
+  font-size: 13px;
+}
+
+.full-width {
+  display: block;
+  text-align: center;
+  margin-top: 22px;
+}
+
+.booking-section {
+  padding: 70px 7%;
+  background: #080808;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.booking-section > p {
+  max-width: 850px;
+  margin: 0 auto 35px;
+  text-align: center;
+  color: #aaa;
+  line-height: 1.7;
+  font-size: 18px;
+}
+
+.booking-boxes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.booking-boxes div {
+  background: #101010;
+  padding: 28px;
+  border-radius: 24px;
+  border: 1px solid rgba(0, 204, 255, 0.18);
+}
+
+.booking-boxes h3 {
+  color: #00cfff;
+  font-size: 24px;
+  margin-top: 0;
+}
+
+.booking-boxes p {
+  color: #aaa;
+  line-height: 1.6;
+}
+
+.footer {
+  text-align: center;
+  padding: 70px 7%;
+}
+
+.footer p {
+  color: #aaa;
+}
+
+.footer-buttons {
+  justify-content: center;
+}
+
+.copyright {
+  margin-top: 40px;
+  font-size: 13px;
+  color: #777;
+}
+
+@media (max-width: 900px) {
+  .hero-content,
+  .pricing-layout,
+  .package-grid,
+  .booking-boxes {
+    grid-template-columns: 1fr;
+  }
+
+  .addon-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .estimate-box {
+    position: static;
+  }
+
+  .nav {
+    align-items: flex-start;
+    gap: 20px;
+    flex-direction: column;
+  }
+
+  .logo-card h3 {
+    font-size: 22px;
+    letter-spacing: 4px;
+  }
+}
