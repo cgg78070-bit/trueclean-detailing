@@ -1,12 +1,68 @@
 import React, { useMemo, useState } from "react";
 import "./index.css";
 
-const packages = [
+const vehicleSizes = [
+  {
+    id: "coupe",
+    name: "Coupe",
+    comboPrice: 170,
+    ceramicPrice: 1100,
+    addonIncrease: 0,
+    description: "Small 2-door vehicles.",
+    examples: "Mustang, Camaro, BRZ, Miata, etc.",
+  },
+  {
+    id: "sedan",
+    name: "Sedan",
+    comboPrice: 185,
+    ceramicPrice: 1200,
+    addonIncrease: 0,
+    description: "Standard 4-door cars.",
+    examples: "Camry, Accord, Altima, Civic, etc.",
+  },
+  {
+    id: "crossover",
+    name: "Crossover",
+    comboPrice: 200,
+    ceramicPrice: 1300,
+    addonIncrease: 0,
+    description: "Small to midsize crossover vehicles.",
+    examples: "RAV4, CR-V, CX-5, Rogue, etc.",
+  },
+  {
+    id: "midsizeSuv",
+    name: "Midsize SUV",
+    comboPrice: 215,
+    ceramicPrice: 1400,
+    addonIncrease: 5,
+    description: "Larger family SUVs and midsize utility vehicles.",
+    examples: "Highlander, 4Runner, Explorer, Telluride, etc.",
+  },
+  {
+    id: "truck",
+    name: "Truck",
+    comboPrice: 215,
+    ceramicPrice: 1400,
+    addonIncrease: 5,
+    description: "Pickup trucks priced the same as midsize SUVs.",
+    examples: "F-150, Silverado, Ram, Tacoma, etc.",
+  },
+  {
+    id: "fullSizeSuv",
+    name: "Full-size SUV",
+    comboPrice: 230,
+    ceramicPrice: 1500,
+    addonIncrease: 5,
+    description: "Large SUVs with more interior and exterior surface area.",
+    examples: "Tahoe, Suburban, Expedition, Yukon XL, etc.",
+  },
+];
+
+const serviceTypes = [
   {
     id: "full",
-    name: "Interior + Exterior Basic",
-    price: 160,
-    description: "Best value for a full clean inside and outside.",
+    name: "Interior + Exterior Base Detail",
+    description: "Best value for a full inside and outside base detail.",
     includes: [
       "Foam and hand wash",
       "Wheel clean",
@@ -14,33 +70,48 @@ const packages = [
       "Tire shine",
       "Full vacuum",
       "Hard surface cleaning",
+      "Interior window clean",
     ],
   },
   {
     id: "exterior",
     name: "Exterior Only",
-    price: 80,
-    description: "A clean exterior wash to bring back shine.",
+    description: "Exterior wash and shine only.",
     includes: ["Foam and hand wash", "Wheel clean", "Window clean", "Tire shine"],
   },
   {
     id: "interior",
     name: "Interior Only",
-    price: 100,
-    description: "A clean reset for the inside of your vehicle.",
-    includes: ["Full vacuum", "Hard surface cleaning", "Window clean"],
+    description: "Interior reset only.",
+    includes: ["Full vacuum", "Hard surface cleaning", "Interior window clean"],
   },
   {
     id: "ceramic",
     name: "Ceramic Coating",
-    price: 1100,
     description:
-      "Premium paint protection option. Final price depends on vehicle size and paint condition.",
+      "Premium ceramic protection service. Price may vary depending on paint condition, prep work, and vehicle condition.",
     includes: [
       "Exterior wash",
       "Paint prep",
-      "Ceramic protection",
+      "Ceramic coating application",
       "Gloss and water resistance",
+      "Final inspection",
+    ],
+  },
+  {
+    id: "ceramicInterior",
+    name: "Ceramic Coating + Interior",
+    description:
+      "Ceramic coating service paired with an interior reset. Price may vary depending on paint condition, prep work, and vehicle condition.",
+    includes: [
+      "Exterior wash",
+      "Paint prep",
+      "Ceramic coating application",
+      "Gloss and water resistance",
+      "Full vacuum",
+      "Hard surface cleaning",
+      "Interior window clean",
+      "Final inspection",
     ],
   },
 ];
@@ -49,57 +120,99 @@ const addOns = [
   {
     id: "sprayWax",
     name: "Spray Wax",
-    price: 25,
+    basePrice: 25,
     type: "Exterior",
-    description: "Adds extra shine and short-term protection after the wash.",
+    description: "Adds shine and short-term paint protection.",
   },
   {
     id: "clayBar",
     name: "Clay Bar",
-    price: 40,
+    basePrice: 40,
     type: "Exterior",
-    description: "Removes stuck-on dirt and rough contaminants from the paint.",
+    description: "Helps remove rough paint contaminants.",
   },
   {
     id: "steam",
     name: "Steam Cleaning",
-    price: 50,
+    basePrice: 50,
     type: "Interior",
-    description: "Uses hot steam to help clean deeper into interior surfaces.",
+    description: "Deeper cleaning for interior surfaces.",
   },
   {
     id: "plastic",
     name: "Plastic Dressing",
-    price: 40,
+    basePrice: 40,
     type: "Interior",
-    description: "Restores a cleaner look to interior plastic trim and panels.",
+    description: "Restores a cleaner look to interior plastic trim.",
   },
   {
     id: "floorMats",
     name: "Rubber Floor Mat Dressing",
-    price: 30,
+    basePrice: 30,
     type: "Interior",
-    description: "Cleans and dresses rubber floor mats for a fresh finish.",
+    description: "Cleans and dresses rubber floor mats.",
   },
   {
     id: "leather",
     name: "Leather Conditioning",
-    price: 35,
+    basePrice: 35,
     type: "Interior",
-    description: "Helps clean and condition leather seats and surfaces.",
+    description: "Conditions leather seats and leather surfaces.",
   },
   {
     id: "petHair",
     name: "Excessive Pet Hair Removal",
-    price: 30,
+    basePrice: 30,
     type: "Interior",
-    description: "Added when extra time is needed to remove heavy pet hair.",
+    description: "Added when extra time is needed for heavy pet hair.",
   },
 ];
 
 function App() {
-  const [selectedPackage, setSelectedPackage] = useState(packages[0]);
+  const [selectedVehicle, setSelectedVehicle] = useState(vehicleSizes[0]);
+  const [selectedService, setSelectedService] = useState(serviceTypes[0]);
   const [selectedAddOns, setSelectedAddOns] = useState([]);
+
+  function roundToNearestFive(number) {
+    return Math.round(number / 5) * 5;
+  }
+
+  function getInteriorOnlyPrice() {
+    const separateTotal = selectedVehicle.comboPrice + 20;
+    const exteriorPrice = roundToNearestFive(separateTotal * 0.45);
+    return separateTotal - exteriorPrice;
+  }
+
+  function getServicePrice(service) {
+    const comboPrice = selectedVehicle.comboPrice;
+    const separateTotal = comboPrice + 20;
+
+    if (service.id === "full") {
+      return comboPrice;
+    }
+
+    if (service.id === "exterior") {
+      return roundToNearestFive(separateTotal * 0.45);
+    }
+
+    if (service.id === "interior") {
+      return getInteriorOnlyPrice();
+    }
+
+    if (service.id === "ceramic") {
+      return selectedVehicle.ceramicPrice;
+    }
+
+    if (service.id === "ceramicInterior") {
+      return selectedVehicle.ceramicPrice + getInteriorOnlyPrice();
+    }
+
+    return comboPrice;
+  }
+
+  function getAddOnPrice(addOn) {
+    return addOn.basePrice + selectedVehicle.addonIncrease;
+  }
 
   function toggleAddOn(id) {
     setSelectedAddOns((current) =>
@@ -113,26 +226,32 @@ function App() {
     return addOns.filter((item) => selectedAddOns.includes(item.id));
   }, [selectedAddOns]);
 
+  const servicePrice = getServicePrice(selectedService);
+
   const total = useMemo(() => {
     return (
-      selectedPackage.price +
-      chosenAddOns.reduce((sum, item) => sum + item.price, 0)
+      servicePrice +
+      chosenAddOns.reduce((sum, item) => sum + getAddOnPrice(item), 0)
     );
-  }, [selectedPackage, chosenAddOns]);
+  }, [servicePrice, chosenAddOns, selectedVehicle]);
 
   const textMessage = encodeURIComponent(
-    `Hi True Clean Auto Detailing, I would like to book a detail.
+    `Hi Rence Premium Detailing, I would like to book a detail.
 
-Package: ${selectedPackage.name} - $${selectedPackage.price}
+Vehicle Size: ${selectedVehicle.name}
+Service: ${selectedService.name} - $${servicePrice}
 Add-ons: ${
       chosenAddOns.length
-        ? chosenAddOns.map((item) => `${item.name} ($${item.price})`).join(", ")
+        ? chosenAddOns
+            .map((item) => `${item.name} ($${getAddOnPrice(item)})`)
+            .join(", ")
         : "None"
     }
+
 Estimated Total: $${total}
 
 Name:
-Vehicle type:
+Vehicle make/model:
 Preferred date:
 Preferred time:
 Service address:
@@ -143,27 +262,27 @@ Notes:`
     <div className="page">
       <header className="hero">
         <nav className="nav">
-          <div className="brand">True Clean</div>
-
+      
           <div className="nav-links">
             <a href="#pricing">Pricing</a>
             <a href="#addons">Add-ons</a>
             <a href="#booking">Booking</a>
+            <a href="#reviews">Reviews</a>
             <a href="#contact">Contact</a>
           </div>
         </nav>
 
         <div className="hero-content">
           <div className="hero-text">
-            <p className="tagline">Mobile Auto Detailing</p>
+          
 
             <h1>
-              True Clean <span>Auto Detailing</span>
+              Rence <span>Premium Detailing</span>
             </h1>
 
             <p className="description">
-              Choose your detailing package, add the services you want, and see
-              your estimated price update instantly.
+              Select your vehicle size, choose your service, add any extras, and
+              see your estimate update before booking.
             </p>
 
             <div className="hero-buttons">
@@ -182,8 +301,8 @@ Notes:`
 
           <div className="logo-card">
             <img
-              src="/images/trueclean-logo.png"
-              alt="True Clean Auto Detailing Logo"
+              src="/images/rence-logo.png"
+              alt="Rence Premium Detailing Logo"
               className="main-logo"
             />
 
@@ -198,33 +317,60 @@ Notes:`
       </section>
 
       <main id="pricing" className="pricing-section">
-        <h2>Customize Your Detail</h2>
+        <h2>Build Your Estimate</h2>
 
         <p className="section-subtitle">
-          Select a package and choose any add-ons you want.
+          Select your vehicle size first. The service prices below will
+          automatically adjust.
         </p>
 
         <div className="pricing-layout">
           <div>
-            <h3 className="step-title">Step 1: Choose a package</h3>
+            <h3 className="step-title">Step 1: Select vehicle size</h3>
 
-            <div className="package-grid">
-              {packages.map((pkg) => (
+            <div className="vehicle-grid">
+              {vehicleSizes.map((vehicle) => (
                 <button
-                  key={pkg.id}
+                  key={vehicle.id}
                   className={
-                    selectedPackage.id === pkg.id
-                      ? "package-card selected"
-                      : "package-card"
+                    selectedVehicle.id === vehicle.id
+                      ? "vehicle-card selected"
+                      : "vehicle-card"
                   }
-                  onClick={() => setSelectedPackage(pkg)}
+                  onClick={() => setSelectedVehicle(vehicle)}
                 >
-                  <h4>{pkg.name}</h4>
-                  <p className="price">${pkg.price}</p>
-                  <p className="package-description">{pkg.description}</p>
+                  <div>
+                    <h4>{vehicle.name}</h4>
+                    <p className="vehicle-description">
+                      {vehicle.description}
+                    </p>
+                    <p className="examples">{vehicle.examples}</p>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            <h3 className="step-title">Step 2: Select service type</h3>
+
+            <div className="service-grid">
+              {serviceTypes.map((service) => (
+                <button
+                  key={service.id}
+                  className={
+                    selectedService.id === service.id
+                      ? "service-card selected"
+                      : "service-card"
+                  }
+                  onClick={() => setSelectedService(service)}
+                >
+                  <h4>{service.name}</h4>
+
+                  <p className="service-price">${getServicePrice(service)}</p>
+
+                  <p className="service-description">{service.description}</p>
 
                   <ul>
-                    {pkg.includes.map((item) => (
+                    {service.includes.map((item) => (
                       <li key={item}>{item}</li>
                     ))}
                   </ul>
@@ -233,7 +379,7 @@ Notes:`
             </div>
 
             <h3 id="addons" className="step-title">
-              Step 2: Choose add-ons
+              Step 3: Choose add-ons
             </h3>
 
             <div className="addon-grid">
@@ -253,7 +399,7 @@ Notes:`
                     <p className="addon-description">{item.description}</p>
                   </div>
 
-                  <p className="addon-price">${item.price}</p>
+                  <p className="addon-price">${getAddOnPrice(item)}</p>
                 </button>
               ))}
             </div>
@@ -263,8 +409,13 @@ Notes:`
             <h3>Your Estimate</h3>
 
             <div className="estimate-row">
-              <span>{selectedPackage.name}</span>
-              <strong>${selectedPackage.price}</strong>
+              <span>Vehicle size</span>
+              <strong>{selectedVehicle.name}</strong>
+            </div>
+
+            <div className="estimate-row">
+              <span>{selectedService.name}</span>
+              <strong>${servicePrice}</strong>
             </div>
 
             {chosenAddOns.length === 0 ? (
@@ -273,7 +424,7 @@ Notes:`
               chosenAddOns.map((item) => (
                 <div className="estimate-row" key={item.id}>
                   <span>{item.name}</span>
-                  <strong>${item.price}</strong>
+                  <strong>${getAddOnPrice(item)}</strong>
                 </div>
               ))
             )}
@@ -284,7 +435,9 @@ Notes:`
             </div>
 
             <p className="note">
-              Final price may change depending on vehicle size and condition.
+              Final price may change depending on vehicle condition, staining,
+              pet hair, paint condition, ceramic prep work, and service
+              location.
             </p>
 
             <a
@@ -301,25 +454,24 @@ Notes:`
         <h2>Book Your Detail</h2>
 
         <p>
-          Online scheduling and payments can be added later. For now, customers
-          can text their selected package, add-ons, vehicle type, preferred date,
-          and service address.
+          Customers can choose their vehicle size, select their service, add
+          extra options, and send the estimate directly by text.
         </p>
 
         <div className="booking-boxes">
           <div>
             <h3>What to Send</h3>
             <p>
-              Name, vehicle type, preferred date, preferred time, service
-              address, and any notes.
+              Name, vehicle make/model, preferred date, preferred time, service
+              address, and any special notes.
             </p>
           </div>
 
           <div>
             <h3>Mobile Service</h3>
             <p>
-              True Clean comes to the customer. Availability can be listed here
-              once your schedule is set.
+              Rence Premium Detailing comes to the customer. Availability can be
+              added once the schedule is finalized.
             </p>
           </div>
 
@@ -333,25 +485,54 @@ Notes:`
         </div>
       </section>
 
-      <footer id="contact" className="footer">
-        <h2>Ready for a True Clean?</h2>
+      <section id="reviews" className="review-section">
+        <h2>Enjoyed Your Detail?</h2>
 
-        <p>Call, text, or message on Instagram to book your detail.</p>
+        <p>
+          Reviews help Rence Premium Detailing grow and help future customers
+          feel confident booking their vehicle. If you were happy with your
+          service, we would appreciate you taking a minute to leave a review.
+        </p>
+
+        <div className="review-buttons">
+          <a
+            href="https://www.google.com/search?q=Rence+Premium+Detailing+review"
+            target="_blank"
+            rel="noreferrer"
+            className="primary-btn"
+          >
+            Leave a Review
+          </a>
+        </div>
+      </section>
+
+      <footer id="contact" className="footer">
+        <h2>Ready for a Premium Detail?</h2>
+
+        <p>Call, text, or message on Instagram or Facebook to book your detail.</p>
 
         <div className="footer-buttons">
           <a href="tel:4706778558">470-677-8558</a>
 
           <a
-            href="https://www.instagram.com/trueclean_autodetailing"
+            href="https://www.instagram.com/rence.premium.detailing/"
             target="_blank"
             rel="noreferrer"
           >
-            @trueclean_autodetailing
+            Instagram
+          </a>
+
+          <a
+            href="https://www.facebook.com/profile.php?id=61563221352873"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Facebook
           </a>
         </div>
 
         <p className="copyright">
-          © {new Date().getFullYear()} True Clean Auto Detailing. Prices are
+          © {new Date().getFullYear()} Rence Premium Detailing. Prices are
           estimates and may vary by vehicle condition.
         </p>
       </footer>
